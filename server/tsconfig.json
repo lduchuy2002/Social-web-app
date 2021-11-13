@@ -25,7 +25,7 @@
     // "isolatedModules": true,               /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
 
     /* Strict Type-Checking Options */
-    "strict": true,                           /* Enable all strict type-checking options. */
+    "strict": false,                           /* Enable all strict type-checking options. */
     // "noImplicitAny": true,                 /* Raise error on expressions and declarations with an implied 'any' type. */
     // "strictNullChecks": true,              /* Enable strict null checks. */
     // "strictFunctionTypes": true,           /* Enable strict checking of function types. */
@@ -61,22 +61,32 @@
     /* Experimental Options */
     // "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
     // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
-
+    "strictPropertyInitialization": false,
+    "noImplicitAny": true,
     /* Advanced Options */
     "skipLibCheck": true,                     /* Skip type checking of declaration files. */
     "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
     "paths": {
-      "@daos/*": [
-        "src/daos/*"
+      "@controller/*": [
+        "src/controller/*"
       ],
-      "@entities/*": [
-        "src/entities/*"
+      "@models/*": [
+        "src/models/*"
       ],
-      "@shared/*": [
-        "src/shared/*"
+      "@routes/*": [
+        "src/routes/*"
       ],
-      "@server": [
-        "src/Server"
+      "@middleware": [
+        "src/middleware/*"
+      ],
+      "@database": [
+        "src/database"
+      ],
+      "@shared": [
+        "src/shared"
+      ],
+      "@utils": [
+        "src/utils/"
       ]
     },
   },
@@ -86,5 +96,5 @@
   ],
   "exclude": [
     "src/public/"
-  ]
+  ],
 }
