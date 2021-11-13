@@ -2,21 +2,25 @@
   "name": "client",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --proxy-config proxy.config.json",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --ext=js,jsx,ts,tsx --ignore-path .gitignore",
+    "lint:fix": "eslint . --ext=js,jsx,ts,tsx --fix --ignore-path .gitignore",
+    "format": "prettier --write **/*.{js,jsx,ts,tsx,css,md,json} --ignore-path .gitignore",
+    "format:check": "prettier --check **/*.{js,jsx,ts,tsx,css,md,json} --ignore-path .gitignore"
   },
   "dependencies": {
-    "next": "12.0.2",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "sass": "^1.43.4"
   },
   "devDependencies": {
-    "@types/node": "16.11.6",
     "@types/react": "17.0.33",
     "eslint": "7",
     "eslint-config-next": "12.0.2",
+    "prettier": "^2.4.1",
     "typescript": "4.4.4"
   }
 }
