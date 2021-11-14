@@ -5,7 +5,7 @@ Huy <3 Pupu
 https://www.npmjs.com/package/notistack-next
 
 #######################################################################################
-http://localhost:8080/api/sign-up
+POST http://localhost:8080/api/sign-up 
 
 Request {
   email: string,
@@ -22,7 +22,7 @@ Reponse {
 }
 
 
-http://localhost:8080/api/sign-in
+POST http://localhost:8080/api/sign-in
 
 Request {
   email: string,
