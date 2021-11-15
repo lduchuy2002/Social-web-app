@@ -36,10 +36,14 @@ Authorization: Bearer eyasakjsagasou41po;1m
 }
 
 -Body {
-  id: number,
-  email: string,
-  username: string,
-  password: string,
-  gender: 0 | 1,
-  birthday: string,
+  data: {
+      id: number,
+      email: string,
+      username: string,
+      password: string,
+      gender: 0 | 1,
+      birthday: string,
+  },
+  type: 'SUCESSS' | 'ERROR' | 'WARNING',
+  message: string
 }
