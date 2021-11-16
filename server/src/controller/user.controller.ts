@@ -73,7 +73,7 @@ export default class UserController {
       } catch (error) {
         return res
           .status(StatusCode.NOT_FOUND)
-          .json(GeneratedResponse(null, 'Server eror!', MessageType.ERROR));
+          .json(GeneratedResponse(null, 'Server error!', MessageType.ERROR));
       }
     }
   }
