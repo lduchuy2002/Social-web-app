@@ -2,7 +2,21 @@
 Huy <3 Pupu
 #######################################################################################
 
+Client lib
+
 https://www.npmjs.com/package/notistack-next
+
+######################################################################################
+
+Server lib
+
+dotenv: https://www.npmjs.com/package/dotenv
+
+http-status-codes: https://www.npmjs.com/package/http-status-codes
+
+jwt: https://www.npmjs.com/package/jsonwebtoken
+
+mysql2: https://www.npmjs.com/package/mysql2 
 
 #######################################################################################
 
