@@ -17,7 +17,6 @@ export default class UserController {
     req: Request,
     res: Response
   ): Promise<Response<any, Record<string, AuthCredental>>> {
-
     const { email, password, gender, birthday, username } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, Number(process.env.SALT));
@@ -27,11 +26,9 @@ export default class UserController {
       .query(`Select * from user where user.email = '${email}'`);
 
     if (users.length !== 0) {
-
       return res
         .status(StatusCode.CONFLICT)
         .json(GeneratedResponse(null, 'This email is already exist!', MessageType.ERROR));
-
     } else {
       try {
         await sql.promise().query(
@@ -85,7 +82,6 @@ export default class UserController {
     req: Request,
     res: Response
   ): Promise<Response<any, Record<string, AuthCredental>>> {
-
     const { email, password } = req.body;
 
     const [users]: any[] = await sql
@@ -109,7 +105,7 @@ export default class UserController {
     }
 
     const isPasswordMisMatch = await bcrypt.compare(password, user.password);
-    
+
     if (!isPasswordMisMatch) {
       return res
         .status(StatusCode.FORBIDDEN)
@@ -123,10 +119,44 @@ export default class UserController {
     }
 
     const token = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET);
-    
+
     res.setHeader('Authorization', `Bearer ${token}`);
     return res
       .status(StatusCode.ACCEPTED)
       .json(GeneratedResponse(user, 'Welcome to Pupu webapp!', MessageType.SUCCESS));
+  }
+  public static async verifyEmail(
+    req: Request,
+    res: Response
+  ): Promise<Response<any, Record<string, any>>> {
+    const token = req.params.token;
+    try {
+      const decoded: any = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+      const userIdFromClient = decoded.id;
+
+      let [users]: any[] = await sql
+        .promise()
+        .query(`Select * from user where user.id = ${userIdFromClient}`);
+
+      if (users.length === 0) {
+        return res
+          .status(StatusCode.UNAUTHORIZED)
+          .json(GeneratedResponse(null, 'Unauthorized!', MessageType.ERROR));
+      }
+
+      await sql
+        .promise()
+        .query(
+          `update user set isEnable = ${isUserEnableMail.enabled} where user.id = ${userIdFromClient}`
+        );
+
+      return res
+        .status(StatusCode.CREATED)
+        .send(GeneratedResponse(null, 'http://localhost:3000/login', MessageType.SUCCESS));
+    } catch (error) {
+      return res
+        .status(StatusCode.UNAUTHORIZED)
+        .json(GeneratedResponse(null, 'Unauthorized!', MessageType.ERROR));
+    }
   }
 }
