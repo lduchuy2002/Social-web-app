@@ -5,11 +5,13 @@ Huy <3 Pupu
 https://www.npmjs.com/package/notistack-next
 
 #######################################################################################
+
 🍩 ⋆ 🍡  🎀  𝗗𝗮𝘁𝗮𝗯𝗮𝘀𝗲  🎀  🍡 ⋆ 🍩
 
 create user (id int not null primary key auto_increment, email nvarchar(50) not null, password nvarchar(200) not null, username nvarchar(50) not null, birthday nvarchar(50) not null , gender boolean default 0, isEnable boolean default 0);
 
 #######################################################################################
+
 🍩 ⋆ 🍡  🎀 𝗔𝗣𝗜  🎀  🍡 ⋆ 🍩
 
 POST http://localhost:8080/api/sign-up 
