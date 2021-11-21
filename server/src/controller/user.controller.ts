@@ -17,6 +17,7 @@ export default class UserController {
     req: Request,
     res: Response
   ): Promise<Response<any, Record<string, AuthCredental>>> {
+
     const { email, password, gender, birthday, username } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, Number(process.env.SALT));
@@ -42,7 +43,7 @@ export default class UserController {
           .query(`select * from user where user.email = '${email}'`);
 
         const token = jwt.sign({ id: userCreated[0].id }, process.env.ACCESS_TOKEN_SECRET);
-
+    
         const transporter = nodemailer.createTransport({
           service: 'gmail',
           auth: {
@@ -60,7 +61,8 @@ export default class UserController {
           <p>Please click the link above to verify your account!</p>
           <b>http://localhost:8080/api/verify-account/${token}</b>`, // html body
         });
-
+         
+      
         return res
           .status(StatusCode.CREATED)
           .json(
@@ -72,8 +74,8 @@ export default class UserController {
           );
       } catch (error) {
         return res
-          .status(StatusCode.NOT_FOUND)
-          .json(GeneratedResponse(null, 'Server error!', MessageType.ERROR));
+          .status(StatusCode.CONFLICT)
+          .json(GeneratedResponse(null, error.message, MessageType.ERROR));
       }
     }
   }
@@ -83,7 +85,7 @@ export default class UserController {
     res: Response
   ): Promise<Response<any, Record<string, AuthCredental>>> {
     const { email, password } = req.body;
-
+    
     const [users]: any[] = await sql
       .promise()
       .query(
@@ -117,10 +119,12 @@ export default class UserController {
           )
         );
     }
-
+   
     const token = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET);
 
-    res.setHeader('Authorization', `Bearer ${token}`);
+    res.cookie('Authorization', token, {
+      httpOnly: true
+    });
     return res
       .status(StatusCode.ACCEPTED)
       .json(GeneratedResponse(user, 'Welcome to Pupu webapp!', MessageType.SUCCESS));
