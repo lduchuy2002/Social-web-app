@@ -1,0 +1,19 @@
+import { ApiResponse } from '../../lib/api'
+
+export interface User {
+  userName: string
+  email: string
+  birthday: string
+  gender: 0 | 1
+  password: string
+}
+
+export interface AuthProviderState {
+  user?: User
+  loading: boolean
+  error: ApiResponse | null
+}
+
+export interface AuthContextAPI extends AuthProviderState {
+  signUp: (user: User) => void
+}
