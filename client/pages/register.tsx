@@ -4,8 +4,7 @@ import React, { ChangeEvent, SyntheticEvent, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import Alert from '../components/Alerts'
-import { useAuth } from '../context/Auth'
-import { User } from '../models/User'
+import { useAuth, User } from '../context/Auth'
 
 const Register: NextPage = () => {
   const [startDate, setStartDate] = useState<any>(new Date())
@@ -26,8 +25,6 @@ const Register: NextPage = () => {
     const { name, value } = e.target
     setUserSignUp({ ...userSignUp, [name]: value })
   }
-
-  console.log(userSignUp)
 
   return (
     <div className="app-padding">
