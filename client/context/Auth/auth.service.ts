@@ -1,10 +1,20 @@
-import api from '../../lib/api'
-import { User } from './auth.types'
+import api, { ApiResponse } from '../../lib/api'
+import { User, AuthCredential } from './auth.types'
 
-const signUp = async (userSignUp: User): Promise<User> => {
-  const response = await api.post('/sign-up', userSignUp)
-  console.log(response.data)
+const getCurrentUser = async (): Promise<User>  => {
+  const response = await api.get('me')
   return response.data
 }
-const authService = { signUp }
+
+const signUp = async (userSignUp: User): Promise<ApiResponse> => {
+  const response = await api.post('sign-up', userSignUp)
+  return response.data
+}
+
+const signIn = async (credential: AuthCredential): Promise<ApiResponse<User>> => {
+  const response = await api.post('sign-in', credential)
+  return response.data
+}
+
+const authService = { getCurrentUser, signUp, signIn }
 export default authService

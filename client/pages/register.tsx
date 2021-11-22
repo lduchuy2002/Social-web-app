@@ -13,7 +13,10 @@ const Register: NextPage = () => {
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
-    signUp({ ...userSignUp, birthday: startDate })
+    signUp({
+      ...userSignUp,
+      birthday: startDate.getDate() + '/' + (startDate.getMonth() + 1) + '/' + startDate.getFullYear(),
+    })
   }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -67,13 +70,7 @@ const Register: NextPage = () => {
           />
         </div>
         <div className="form-group mt-3">
-          <DatePicker
-            name="birthday"
-            className="app-control"
-            selected={startDate}
-            onChange={(date: Date) =>
-              setStartDate(date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear())
-            }></DatePicker>
+          <DatePicker name="birthday" className="app-control" selected={startDate} onChange={setStartDate}></DatePicker>
         </div>
         <div className="form-group mt-3">
           <select
