@@ -9,6 +9,7 @@ import * as dotenv from 'dotenv';
 import sql from 'src/database/config';
 import GeneratedResponse from 'src/shared/ResponseSchema';
 import { isUserEnableMail } from 'src/utils/constants/constants';
+import { IRequest } from '@models/IRequest.model';
 
 dotenv.config();
 
@@ -17,7 +18,6 @@ export default class UserController {
     req: Request,
     res: Response
   ): Promise<Response<any, Record<string, AuthCredental>>> {
-
     const { email, password, gender, birthday, username } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, Number(process.env.SALT));
@@ -42,8 +42,10 @@ export default class UserController {
           .promise()
           .query(`select * from user where user.email = '${email}'`);
 
-        const token = jwt.sign({ id: userCreated[0].id }, process.env.ACCESS_TOKEN_SECRET);
-    
+        const token = jwt.sign({ id: userCreated[0].id }, process.env.ACCESS_TOKEN_SECRET, {
+          expiresIn: '30m',
+        });
+
         const transporter = nodemailer.createTransport({
           service: 'gmail',
           auth: {
@@ -58,11 +60,28 @@ export default class UserController {
           subject: 'Verify social media account.', // Subject line
           text: 'Please click the link above to verify your account?', // plain text body
           html: `
-          <p>Please click the link above to verify your account!</p>
-          <b>http://localhost:8080/api/verify-account/${token}</b>`, // html body
+          <p>Please click the link above to verify your account!<br> This email just effect in 30 minutes!</br></p>
+          <a style="
+          color: #fff;
+          background-color: #dc3545;
+          border-color: #dc3545;
+          cursor: pointer;
+          appearance: button;
+          display: inline-block;
+          font-weight: 400;
+          text-align: center;
+          white-space: nowrap;
+          vertical-align: middle;    
+          border: 1px solid transparent;
+          padding: 0.375rem 0.75rem;
+          font-size: 1rem;
+          line-height: 1.5;
+          border-radius: 0.25rem;
+          text-decoration: none;
+          " 
+          href="http://localhost:8080/api/verify-account/${token}">Verify</a>`, // html body
         });
-         
-      
+
         return res
           .status(StatusCode.CREATED)
           .json(
@@ -85,7 +104,7 @@ export default class UserController {
     res: Response
   ): Promise<Response<any, Record<string, AuthCredental>>> {
     const { email, password } = req.body;
-    
+
     const [users]: any[] = await sql
       .promise()
       .query(
@@ -119,11 +138,11 @@ export default class UserController {
           )
         );
     }
-   
+
     const token = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET);
 
     res.cookie('Authorization', token, {
-      httpOnly: true
+      httpOnly: true,
     });
     return res
       .status(StatusCode.ACCEPTED)
@@ -134,6 +153,11 @@ export default class UserController {
     res: Response
   ): Promise<Response<any, Record<string, any>>> {
     const token = req.params.token;
+    const unauthorizeResponse = () =>
+      res
+        .status(StatusCode.UNAUTHORIZED)
+        .json(GeneratedResponse(null, 'Unauthorized!', MessageType.ERROR));
+
     try {
       const decoded: any = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
       const userIdFromClient = decoded.id;
@@ -143,9 +167,7 @@ export default class UserController {
         .query(`Select * from user where user.id = ${userIdFromClient}`);
 
       if (users.length === 0) {
-        return res
-          .status(StatusCode.UNAUTHORIZED)
-          .json(GeneratedResponse(null, 'Unauthorized!', MessageType.ERROR));
+        return unauthorizeResponse();
       }
 
       await sql
@@ -158,9 +180,16 @@ export default class UserController {
         .status(StatusCode.CREATED)
         .send(GeneratedResponse(null, 'http://localhost:3000/login', MessageType.SUCCESS));
     } catch (error) {
-      return res
-        .status(StatusCode.UNAUTHORIZED)
-        .json(GeneratedResponse(null, 'Unauthorized!', MessageType.ERROR));
+      return unauthorizeResponse();
     }
+  }
+
+  public static async getUserProfile(
+    req: IRequest,
+    res: Response
+  ): Promise<Response<any, Record<string, AuthCredental>>> {
+    return res
+      .status(StatusCode.OK)
+      .json(GeneratedResponse(req.user, 'Here is your information', MessageType.SUCCESS));
   }
 }

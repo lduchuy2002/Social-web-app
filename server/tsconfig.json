@@ -76,7 +76,7 @@
       "@routes/*": [
         "src/routes/*"
       ],
-      "@middleware": [
+      "@middleware/*": [
         "src/middleware/*"
       ],
       "@database": [
