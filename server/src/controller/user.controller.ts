@@ -14,6 +14,7 @@ import { IRequest } from '@models/IRequest.model';
 dotenv.config();
 
 export default class UserController {
+  
   public static async signUp(
     req: Request,
     res: Response
@@ -42,9 +43,7 @@ export default class UserController {
           .promise()
           .query(`select * from user where user.email = '${email}'`);
 
-        const token = jwt.sign({ id: userCreated[0].id }, process.env.ACCESS_TOKEN_SECRET, {
-          expiresIn: '30m',
-        });
+        const token = jwt.sign({ id: userCreated[0].id }, process.env.ACCESS_TOKEN_SECRET);
 
         const transporter = nodemailer.createTransport({
           service: 'gmail',
@@ -139,15 +138,19 @@ export default class UserController {
         );
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET);
+    const token = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: '30s'
+    });
 
     res.cookie('Authorization', token, {
       httpOnly: true,
     });
+
     return res
       .status(StatusCode.ACCEPTED)
       .json(GeneratedResponse(user, 'Welcome to Pupu webapp!', MessageType.SUCCESS));
   }
+
   public static async verifyEmail(
     req: Request,
     res: Response
