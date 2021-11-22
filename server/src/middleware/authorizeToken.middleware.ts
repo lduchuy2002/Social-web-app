@@ -3,7 +3,7 @@ import { NextFunction, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import GeneratedResponse from 'src/shared/ResponseSchema';
 import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
+import jwt, { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
 import { IRequest } from '@models/IRequest.model';
 import sql from 'src/database/config';
 
@@ -19,12 +19,22 @@ const authorizeToken = async (req: IRequest, res: Response, next: NextFunction) 
     return unauthorizeResponse();
   }
 
-  const decoded: any = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  const decoded: any = jwt.verify(
+    token,
+    process.env.ACCESS_TOKEN_SECRET,
+    (error: JsonWebTokenError) => {
+      //Token expired
+      if (error.name === 'TokenExpiredError') {
+        const newToken = jwt.sign(decoded.id, process.env.ACCESS_TOKEN_SECRET, {
+          expiresIn: '30s',
+        });
+        res.cookie('Authorization', newToken);
+      } else {
+        return unauthorizeResponse();
+      }
+    }
+  );
   const userIdFromClient = decoded.id;
-
-  if (!decoded) {
-    return unauthorizeResponse();
-  }
 
   const [users]: any[] = await sql
     .promise()
