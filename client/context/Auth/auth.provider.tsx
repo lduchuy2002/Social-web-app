@@ -10,7 +10,7 @@ const AuthContext = createContext<AuthContextAPI>({} as AuthContextAPI)
 const AuthProvider: React.FC = ({ children }) => {
   const [error, setError] = useState<ApiResponse<MessageType> | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
-  const [user, setUser] = useState<User>({} as User)
+  const [user, setUser] = useState<User | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -18,7 +18,11 @@ const AuthProvider: React.FC = ({ children }) => {
   }, [router.pathname])
 
   useEffect(() => {
-    authService.getCurrentUser().then((newUser) => setUser(newUser)).catch(() => {})
+    authService.getCurrentUser().then((res: ApiResponse<User>) => setUser(res.data)).catch(() => {})
+  }, [router.pathname])
+
+  useEffect(() => {
+ 
   }, [router.pathname])
 
   const signUp = (userSignUp: User): void => {
@@ -38,12 +42,11 @@ const AuthProvider: React.FC = ({ children }) => {
     setLoading(true)
     authService
       .signIn(credential)
-      .then(() => {})
-      .catch((newError) => setError(newError))
+      .then((res: ApiResponse<User>) => setUser(res.data))
+      .catch(setError)
       .finally(() => setLoading(false))
   }
-
-  if(['/register', '/login'].indexOf(router.pathname) > -1 && User) {
+  if (['/login', '/register'].indexOf(router.pathname) > -1 && user) {
     router.push('/')
     return null
   }

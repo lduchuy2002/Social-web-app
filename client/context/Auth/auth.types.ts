@@ -13,7 +13,7 @@ export interface AuthCredential {
 }
 
 export interface AuthProviderState {
-  user?: User
+  user: User | null
   loading: boolean
   error: ApiResponse | null
 }
