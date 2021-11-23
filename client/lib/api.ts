@@ -13,7 +13,7 @@ export type MessageType = typeof ResponseMessage[MessageKey]
 export interface ApiResponse<T = any> {
   type: MessageType
   message: string
-  data: any | null
+  data: T | null
   status?: number
 }
 

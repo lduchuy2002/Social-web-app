@@ -7,6 +7,10 @@ export interface User {
   gender: 0 | 1
   password: string
 }
+export interface AuthCredential {
+  email: string
+  password: string
+}
 
 export interface AuthProviderState {
   user?: User
@@ -16,4 +20,5 @@ export interface AuthProviderState {
 
 export interface AuthContextAPI extends AuthProviderState {
   signUp: (user: User) => void
+  signIn: (credential: AuthCredential) => void
 }
