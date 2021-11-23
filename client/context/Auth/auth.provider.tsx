@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect } from 'react'
+import { createContext, useCallback, useContext, useEffect } from 'react'
 import authService from './auth.service'
 import { AuthContextAPI, AuthCredential, User } from './auth.types'
 import { useState } from 'react'
@@ -46,12 +46,19 @@ const AuthProvider: React.FC = ({ children }) => {
       .catch(setError)
       .finally(() => setLoading(false))
   }
+
+  const authContextValue = useCallback(()=>{
+    return {
+       error, user, loading, signUp, signIn 
+    }
+  },[error, loading, user]) 
+
   if (['/login', '/register'].indexOf(router.pathname) > -1 && user) {
     router.push('/')
     return null
   }
 
-  return <AuthContext.Provider value={{ error, user, loading, signUp, signIn }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={authContextValue()}>{loading && children}</AuthContext.Provider>
 }
 
 export const useAuth = () => useContext(AuthContext)

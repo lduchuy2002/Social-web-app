@@ -62,7 +62,7 @@ const Register: NextPage = () => {
         <div className="form-group mt-3">
           <input
             type="text"
-            name="userName"
+            name="username"
             className="form-control app-control"
             id="inputUserName"
             placeholder="User name"

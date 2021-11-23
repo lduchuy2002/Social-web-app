@@ -14,7 +14,6 @@ import { IRequest } from '@models/IRequest.model';
 dotenv.config();
 
 export default class UserController {
-  
   public static async signUp(
     req: Request,
     res: Response
@@ -138,12 +137,11 @@ export default class UserController {
         );
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: '30s'
-    });
+    const token = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET);
 
     res.cookie('Authorization', token, {
       httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
     });
 
     return res

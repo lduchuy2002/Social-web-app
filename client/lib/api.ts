@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 
 export const ResponseMessage = {
   ERROR: 'ERROR',
@@ -23,18 +23,21 @@ export const axiosClient = axios.create({
 })
 
 axiosClient.interceptors.response.use(
-  (response) => {
+  (response: AxiosResponse) => {
     if (response.data && response.data.type === ResponseMessage.ERROR) {
       return Promise.reject(response.data)
     }
     return response
   },
-  (error) => {
+  (error: AxiosError) => {
     let { message } = error
     let status
     if (error.response) {
       message = error.response.data.message
       status = error.response.status
+    }
+    if(error.code == '401'){
+       window.location.replace('/login');
     }
     const err: ApiResponse = {
       data: error,
