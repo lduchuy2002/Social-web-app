@@ -1,10 +1,15 @@
-import type { NextPage } from 'next'
+import Header from '../components/Commons/Header'
 import { useAuth } from '../context/Auth'
 
-const Home: NextPage = () => {
-  console.log('run')
+const Home: React.FC = ({ children }) => {
   const { user } = useAuth()
-  return <div className="text-center text-danger font-weight-800">Welcome {user?.userName} to PupuKity App!</div>
+
+  return (
+    <>
+    <Header />
+    <div>Hello</div>
+    </>
+  )
 }
 
 export default Home

@@ -11,6 +11,7 @@ const AuthProvider: React.FC = ({ children }) => {
   const [error, setError] = useState<ApiResponse<MessageType> | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [user, setUser] = useState<User | null>(null)
+  const [loadingInitial,setLoadingInitial] = useState<boolean>(true)
   const router = useRouter()
 
   useEffect(() => {
@@ -18,11 +19,8 @@ const AuthProvider: React.FC = ({ children }) => {
   }, [router.pathname])
 
   useEffect(() => {
-    authService.getCurrentUser().then((res: ApiResponse<User>) => setUser(res.data)).catch(() => {})
-  }, [router.pathname])
-
-  useEffect(() => {
- 
+    authService.getCurrentUser().then((res: ApiResponse<User>) => setUser(res.data)).catch(setError)
+    .finally(()=>setLoadingInitial(false))
   }, [router.pathname])
 
   const signUp = (userSignUp: User): void => {
@@ -58,7 +56,7 @@ const AuthProvider: React.FC = ({ children }) => {
     return null
   }
 
-  return <AuthContext.Provider value={authContextValue()}>{loading && children}</AuthContext.Provider>
+  return <AuthContext.Provider value={authContextValue()}>{loadingInitial === false && children}</AuthContext.Provider>
 }
 
 export const useAuth = () => useContext(AuthContext)

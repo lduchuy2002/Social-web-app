@@ -8,6 +8,11 @@
         "displayName": false,
         "preprocess": false
       }
+    ],
+    [
+      "babel-plugin-direct-import",
+      { "modules": ["@mui/material", "@mui/icons-material"] }
     ]
+    
   ]
 }

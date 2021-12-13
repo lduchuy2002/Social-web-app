@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app'
 import '../styles/globals.scss'
 import Providers from './Provider'
 
-function MyApp({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if (typeof document !== undefined) {
       import('bootstrap')
@@ -16,4 +16,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   )
 }
 
-export default MyApp
+export default App
